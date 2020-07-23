@@ -43,6 +43,24 @@ public class RestApiWeatherTest {
     }
 
     @Test
+    public void addWeatherTestWithInvalidJSON() throws Exception {
+    	
+        String wInfo = "[{\"id\":3,\"date\":\"2000-01-03\",\"location\":{\"lat\":36.1189\"lon\":-86.6892,\"city\":\"Palo Alto\",\"state\":\"California\"},\"temperature\":[\"37.3\",\"36.8\",\"36.4\",\"36\",\"35.6\",\"35.3\",\"35\",\"34.9\",\"35.8\",\"38\",\"40.2\",\"42.3\",\"43.8\",\"44.9\",\"45.5\",\"45.7\",\"44.9\",\"43\",\"41.7\",\"40.8\",\"39.9\",\"39.2\",\"38.6\",\"38.1\"]}]";    	
+        ResponseEntity<String> response = template.postForEntity(base.toString() + "weather",wInfo, String.class);
+        
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
+    @Test
+    public void addWeatherTestWithInvalidDate() throws Exception {
+    	
+        String wInfo = "[{\"id\":3,\"date\":\"2000-23-03\",\"location\":{\"lat\":36.1189,\"lon\":-86.6892,\"city\":\"Palo Alto\",\"state\":\"California\"},\"temperature\":[\"37.3\",\"36.8\",\"36.4\",\"36\",\"35.6\",\"35.3\",\"35\",\"34.9\",\"35.8\",\"38\",\"40.2\",\"42.3\",\"43.8\",\"44.9\",\"45.5\",\"45.7\",\"44.9\",\"43\",\"41.7\",\"40.8\",\"39.9\",\"39.2\",\"38.6\",\"38.1\"]}]";    	
+        ResponseEntity<String> response = template.postForEntity(base.toString() + "weather",wInfo, String.class);
+        
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    
+    @Test
     public void addWeatherTest() throws Exception {
     	
         String wInfo = "[{\"id\":3,\"date\":\"2000-01-03\",\"location\":{\"lat\":36.1189,\"lon\":-86.6892,\"city\":\"Palo Alto\",\"state\":\"California\"},\"temperature\":[\"37.3\",\"36.8\",\"36.4\",\"36\",\"35.6\",\"35.3\",\"35\",\"34.9\",\"35.8\",\"38\",\"40.2\",\"42.3\",\"43.8\",\"44.9\",\"45.5\",\"45.7\",\"44.9\",\"43\",\"41.7\",\"40.8\",\"39.9\",\"39.2\",\"38.6\",\"38.1\"]}]";    	

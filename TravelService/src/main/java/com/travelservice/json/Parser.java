@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.travelservice.exceptions.InvalidJsonException;
 import com.travelservice.incoming.Weather;
 
@@ -32,24 +33,29 @@ public class Parser {
     public static Weather[] parseIncomingData(String jsonWeatherInfo) throws Exception{
     	
     	try {
-        		if(!isJSONValid(jsonWeatherInfo))
-        			throw new InvalidJsonException("Invalid JSON Format." );
-        	
-        		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        		mapper.setDateFormat(df);
+    		if(!isJSONValid(jsonWeatherInfo))
+    		{
+    			logger.debug("Invalid JSON.");
+    			throw new InvalidJsonException("Invalid JSON Format." );
+    		}
+    	
+    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    		mapper.setDateFormat(df);
+    		mapper.setDefaultLeniency(false);
+    		
+    		// Enables us to read array of weather data with 1 or more elements .
+    		mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); 
+    		
+    		Weather[] arrWInfo = mapper.readValue(jsonWeatherInfo, Weather[].class);
         		
-        		// Enables us to read array of weather data with 1 or more elements .
-        		mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY); 
-        		
-        		Weather[] arrWInfo = mapper.readValue(jsonWeatherInfo, Weather[].class);
-        		
-        		for(Weather winfo : arrWInfo)
-        			logger.debug(winfo.toString());
-	
     		return arrWInfo;
     	}
+    	catch(InvalidFormatException e) {
+    		logger.debug(e.getMessage());	
+    		throw new InvalidJsonException("Invalid Date format.");
+    	}
     	catch(Exception e) {
-    		logger.error(e.getMessage());
+    		logger.debug(e.getMessage());
     		throw e;
     	}
     }

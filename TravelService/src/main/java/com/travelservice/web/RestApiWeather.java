@@ -44,7 +44,7 @@ public class RestApiWeather {
 	 */
 	@RequestMapping(value="/weather", method=RequestMethod.POST)
 	@ResponseStatus
-	public ResponseEntity<String> addWeather(@RequestBody String jsonWeatherInfo) throws Exception{
+	public ResponseEntity<String> addWeather(@RequestBody String jsonWeatherInfo){
 		try {
 
 			logger.info("Received : Adding weather entr(y|ies).");
@@ -53,14 +53,8 @@ public class RestApiWeather {
 			for(Weather winfo : wInfoList)
 				dbService.addWeatherEntry(winfo);
 		}
-		catch(EntryAlreadyExistsException e) {
-			return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
-		} 
-		catch(InvalidJsonException e) {
-			return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
-		}
 		catch (Exception e) {
-			throw e;
+			return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<String>(HttpStatus.CREATED);		 
 	}
