@@ -62,7 +62,7 @@ public class RestApiWeather {
 		catch (Exception e) {
 			throw e;
 		}
-		return new ResponseEntity<String>(HttpStatus.OK);		 
+		return new ResponseEntity<String>(HttpStatus.CREATED);		 
 	}
 
 	/**
